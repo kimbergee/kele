@@ -1,6 +1,7 @@
 require 'httparty'
 require 'json'
-require '/Users/kimberlygee/Code/kele/lib/roadmap.rb'
+# require '/Users/kimberlygee/Code/kele/lib/roadmap.rb'
+require './lib/roadmap.rb'
 
 class Kele
   include HTTParty
@@ -32,7 +33,7 @@ class Kele
     @messages = JSON.parse(response.body)
   end
 
-  def create_message(user_id, recipient_id, token, subject, message)
+  def create_message(user_id, recipient_id, token=nil, subject, message)
     response = self.class.post(api_url("messages"),
       body: {
         "user_id": user_id,
@@ -41,7 +42,20 @@ class Kele
         "subject": subject,
         "stripped_text": message
         },
-        headers: {"authorization" => @auth_token})
+      headers: {"authorization" => @auth_token})
+    puts response
+  end
+
+  def create_submission(assignment_branch, assignment_commit_link, checkpoint_id, comment, enrollment_id)
+    response = self.class.post(api_url("checkpoint_submissions"),
+      body: {
+        "assignment_branch": assignment_branch,
+        "assignment_commit_link": assignment_commit_link,
+        "checkpoint_id": checkpoint_id,
+        "comment": comment,
+        "enrollment_id": enrollment_id
+        },
+      headers: {"authorization" => @auth_token})
     puts response
   end
 
